@@ -1,0 +1,56 @@
+#define RED 13
+#define GREEN 12
+#define BLUE 11
+#define MSFT 9
+
+
+#include <TMP36.h>
+
+
+//Create an instance of the TMP36 class and
+//define the pin the sensor is connected to
+//If using 3.3v Arduino, change 5 to 3.3
+TMP36 myTMP36(A0, 5);
+void setup()
+{
+ Serial.begin(9600);
+ pinMode(RED, OUTPUT);
+ pinMode(BLUE, OUTPUT);
+ pinMode(GREEN, OUTPUT);
+ pinMode(MSFT, OUTPUT);
+}
+void loop()
+{
+ float temperatureF = myTMP36.getTempF();
+ Serial.print("Farenheit: ");
+ Serial.println(temperatureF);
+ float voltage = myTMP36.getVoltage();
+ Serial.print("Voltage: ");
+ Serial.println(voltage);
+// if hot, then turn light red and run current
+if (temperatureF < 120 && temperatureF > 85)
+{
+  digitalWrite(RED, HIGH);
+  digitalWrite(GREEN,LOW);
+  digitalWrite(BLUE, LOW);
+  digitalWrite(MSFT, HIGH);
+}
+// if kinda hot, then turn light green and run current
+else if (temperatureF < 85 && temperatureF > 72)
+{
+  digitalWrite(RED, LOW);
+  digitalWrite(GREEN, HIGH);
+  digitalWrite(BLUE, LOW);
+  digitalWrite(MSFT, HIGH);
+}
+else if (temperatureF < 72)
+// if cold, then turn light blue and cut current
+{
+  digitalWrite(RED, LOW);
+  digitalWrite(GREEN,LOW);
+  digitalWrite(BLUE, HIGH);
+  digitalWrite(MSFT, LOW);
+}
+// wait half a second before running current
+delay(500);
+}
